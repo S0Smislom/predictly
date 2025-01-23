@@ -1,0 +1,5 @@
+django
+redis
+aiogram
+psycopg
+psycopg[binary]
