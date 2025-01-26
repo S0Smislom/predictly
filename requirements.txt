@@ -22,7 +22,18 @@ attrs==24.3.0
     # via aiohttp
 certifi==2024.12.14
     # via aiogram
+click==8.1.8
+    # via typer
 django==5.1.5
+    # via
+    #   -r requirements.in
+    #   django-appconf
+    #   django-jazzmin
+django-appconf==1.0.6
+    # via django-imagekit
+django-imagekit==5.0.0
+    # via -r requirements.in
+django-jazzmin==3.0.1
     # via -r requirements.in
 frozenlist==1.5.0
     # via
@@ -30,12 +41,26 @@ frozenlist==1.5.0
     #   aiosignal
 idna==3.10
     # via yarl
+jinja2==3.1.5
+    # via -r requirements.in
 magic-filter==1.0.12
     # via aiogram
+markdown-it-py==3.0.0
+    # via rich
+markupsafe==3.0.2
+    # via jinja2
+mdurl==0.1.2
+    # via markdown-it-py
 multidict==6.1.0
     # via
     #   aiohttp
     #   yarl
+pilkit==3.0
+    # via django-imagekit
+pillow==10.4.0
+    # via
+    #   pilkit
+    #   thumbhash-python
 propcache==0.2.1
     # via
     #   aiohttp
@@ -48,15 +73,26 @@ pydantic==2.10.5
     # via aiogram
 pydantic-core==2.27.2
     # via pydantic
+pygments==2.19.1
+    # via rich
 redis==5.2.1
     # via -r requirements.in
+rich==13.9.4
+    # via typer
+shellingham==1.5.4
+    # via typer
 sqlparse==0.5.3
     # via django
+thumbhash-python==1.0.1
+    # via -r requirements.in
+typer[all]==0.15.1
+    # via thumbhash-python
 typing-extensions==4.12.2
     # via
     #   aiogram
     #   psycopg
     #   pydantic
     #   pydantic-core
+    #   typer
 yarl==1.18.3
     # via aiohttp

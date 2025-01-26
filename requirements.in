@@ -3,3 +3,7 @@ redis
 aiogram
 psycopg
 psycopg[binary]
+django-jazzmin
+jinja2
+django-imagekit
+thumbhash-python

@@ -1,0 +1,70 @@
+services:
+  predictly-db:
+    container_name: predictly-db
+    image: postgres:16-alpine
+    restart: on-failure
+    ports:
+      - '127.0.0.1:5454:5432'
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+      - ./db_dump:/db_dump
+    networks:
+      - predictly-net
+    # command: ["postgres", "-c", "log_statement=all"]
+
+  predictly-server:
+    container_name: predictly-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: on-failure
+    volumes:
+      - ./proj:/code/proj/
+    env_file:
+      - ./env/.env
+    depends_on:
+      - predictly-db
+    networks:
+      - predictly-net
+    command: python manage.py runserver 0.0.0.0:8000
+
+  predictly-bot:
+    container_name: predictly-bot
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: on-failure
+    volumes:
+      - ./proj:/code/proj/
+    env_file:
+      - ./env/.env
+    depends_on:
+      - predictly-db
+    networks:
+      - predictly-net
+    command: python manage.py runbot
+
+  predictly-proxy:
+    container_name: predictly-proxy
+    build:
+      context: ./nginx/
+      dockerfile: Dockerfile
+    volumes:
+      - ./proj/static:/mnt/static/
+      - ./proj/media:/mnt/media/
+    ports:
+      - 127.0.0.1:8000:80
+    depends_on:
+      - predictly-server
+    restart: on-failure
+    networks:
+      - predictly-net
+
+networks:
+  predictly-net:
+    external: true
+    driver: bridge
