@@ -1,6 +1,11 @@
 # Telegram Prediction Bot
 
+
 A Telegram bot for making predictions, built with Python using `aiogram` for bot development and `Django` for backend management.
+
+
+Link: https://t.me/PredictlyBot
+
 
 ## Installation and Usage
 

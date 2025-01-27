@@ -1,4 +1,5 @@
 from asgiref.sync import sync_to_async
+from common.models import ShowDefault
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
@@ -38,8 +39,7 @@ class TextPrediction(models.Model):
         return self.text
 
 
-class ImagePrediction(models.Model):
-    title = models.CharField(max_length=120, null=True, blank=True)
+class ImagePrediction(ShowDefault):
     file = ProcessedImageField(
         upload_to="images/%Y/%m/%d/", format="WEBP", options={"quality": 100}
     )
@@ -86,11 +86,10 @@ class ImagePrediction(models.Model):
         return self.file.name
 
 
-class AudioPrediction(models.Model):
-    title = models.CharField(max_length=120, null=True, blank=True)
+class AudioPrediction(ShowDefault):
     file = models.FileField(upload_to="audio/")
+    show_default = models.BooleanField(default=False)
 
-    # @property
     def sound_display(self):
         return mark_safe(
             f'<audio controls name="media"><source src="{self.file.url}" type="audio/mpeg"></audio>'
@@ -103,8 +102,7 @@ class AudioPrediction(models.Model):
         return self.file.name
 
 
-class VideoPrediction(models.Model):
-    title = models.CharField(max_length=120, null=True, blank=True)
+class VideoPrediction(ShowDefault):
     file = models.FileField(upload_to="video/")
 
     def video_display(self):

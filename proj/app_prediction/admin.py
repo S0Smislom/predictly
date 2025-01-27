@@ -18,8 +18,7 @@ class ImagePredictionAdmin(admin.ModelAdmin):
         "title",
         "file",
     )
-    fields = ("admin_image", "title", "file")
-    readonly_fields = ("admin_image",)
+    readonly_fields = ("admin_image", "width", "height", "thumbhash")
     actions = [publish, unpublish, create_predictions, delete_predictions]
     model = ImagePrediction
 
