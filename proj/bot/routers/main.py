@@ -1,8 +1,6 @@
-from random import randint
-
 from aiogram import F, Router
 from aiogram.filters import Command, CommandStart
-from aiogram.types import BufferedInputFile, Message
+from aiogram.types import Message
 from app_prediction.models import (
     AudioPrediction,
     ImagePrediction,
@@ -12,7 +10,12 @@ from app_prediction.models import (
 from app_prediction.services import PredictionService
 from bot.common.template import welcome_message
 from bot.utils.chat import no_predictions_error, save_chat
-from jinja2 import Template
+from bot.utils.prediction import (
+    handle_audio_prediction,
+    handle_image_prediction,
+    handle_text_prediction,
+    handle_video_prediction,
+)
 
 main_router = Router()
 
@@ -36,39 +39,17 @@ async def predict_handler(message: Message):
         return await no_predictions_error(message)
     chat_users = [_ async for _ in chat.users.all()]
     if isinstance(prediction_object, TextPrediction):
-        template = Template(prediction_object.text)
-        template.globals.update(
-            username=lambda users: "@" + users[randint(0, len(users) - 1)].username,
+        return await handle_text_prediction(
+            message, prediction_object, current_user, chat_users
         )
-        return await message.answer(
-            text=template.render(current_user=current_user, users=chat_users),
-            reply_to_message_id=message.message_id,
-        )
-    elif isinstance(prediction_object, AudioPrediction):
-        return await message.answer_voice(
-            BufferedInputFile(
-                file=prediction_object.file.read(),
-                filename=prediction_object.file.name,
-            ),
-            reply_to_message_id=message.message_id,
-        )
-    elif isinstance(prediction_object, VideoPrediction):
-        return await message.answer_video(
-            BufferedInputFile(
-                file=prediction_object.file.read(),
-                filename=prediction_object.file.name,
-            ),
-            caption="Твое видео сказание",
-            reply_to_message_id=message.message_id,
-        )
-    elif isinstance(prediction_object, ImagePrediction):
-        return await message.answer_photo(
-            photo=BufferedInputFile(
-                file=prediction_object.file.read(),
-                filename=prediction_object.file.name,
-            ),
-            caption="Твое мем сказание",
-            reply_to_message_id=message.message_id,
-        )
+
+    if isinstance(prediction_object, AudioPrediction):
+        return await handle_audio_prediction(message, prediction_object)
+
+    if isinstance(prediction_object, VideoPrediction):
+        return await handle_video_prediction(message, prediction_object)
+
+    if isinstance(prediction_object, ImagePrediction):
+        return await handle_image_prediction(message, prediction_object)
 
     return await no_predictions_error(message)
