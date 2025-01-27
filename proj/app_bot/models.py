@@ -12,6 +12,9 @@ class User(models.Model):
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
 
+    def get_username(self):
+        return "@" + self.username
+
 
 class Chat(models.Model):
     id = models.CharField(max_length=200, primary_key=True)

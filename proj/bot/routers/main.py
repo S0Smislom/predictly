@@ -25,7 +25,7 @@ async def start_handler(message: Message):
 
 @main_router.message(Command("predict"))
 async def predict_handler(message: Message):
-    chat = await save_chat(message)
+    chat, current_user = await save_chat(message)
 
     prediction = await PredictionService().get_random()
     if not prediction:
@@ -35,14 +35,13 @@ async def predict_handler(message: Message):
     if not prediction_object:
         return await no_predictions_error(message)
     chat_users = [_ async for _ in chat.users.all()]
-
     if isinstance(prediction_object, TextPrediction):
         template = Template(prediction_object.text)
         template.globals.update(
             username=lambda users: "@" + users[randint(0, len(users) - 1)].username,
         )
         return await message.answer(
-            text=template.render(users=chat_users),
+            text=template.render(current_user=current_user, users=chat_users),
             reply_to_message_id=message.message_id,
         )
     elif isinstance(prediction_object, AudioPrediction):

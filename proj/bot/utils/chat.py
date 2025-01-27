@@ -7,7 +7,7 @@ async def save_chat(message: Message):
         message.from_user.id, username=message.from_user.username
     )
     chat, _ = await ChatService().get_or_create(message.chat.id, [user])
-    return chat
+    return chat, user
 
 
 async def no_predictions_error(message: Message) -> Message:
