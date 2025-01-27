@@ -19,7 +19,7 @@ class ImagePredictionAdmin(admin.ModelAdmin):
         "file",
     )
     readonly_fields = ("admin_image", "width", "height", "thumbhash")
-    actions = [publish, unpublish, create_predictions, delete_predictions]
+    actions = [create_predictions, delete_predictions]
     model = ImagePrediction
 
 
@@ -27,7 +27,7 @@ class AudioPredictionAdmin(admin.ModelAdmin):
     list_display = ("id", "title", "sound_display")
     readonly_fields = ("sound_display",)
 
-    actions = [publish, unpublish, create_predictions, delete_predictions]
+    actions = [create_predictions, delete_predictions]
     model = AudioPrediction
 
 
@@ -35,12 +35,12 @@ class VideoPredictionAdmin(admin.ModelAdmin):
     list_display = ("id", "title", "video_display")
     readonly_fields = ("video_display",)
     model = VideoPrediction
-    actions = [publish, unpublish, create_predictions, delete_predictions]
+    actions = [create_predictions, delete_predictions]
 
 
 class TextPredictionAdmin(admin.ModelAdmin):
     list_display = ("id", "text")
-    actions = [publish, unpublish, create_predictions, delete_predictions]
+    actions = [create_predictions, delete_predictions]
 
 
 class PredictionAdmin(admin.ModelAdmin):
