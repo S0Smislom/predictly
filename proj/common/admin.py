@@ -15,9 +15,22 @@ def unpublish(modeladmin, request, queryset):
 @admin.action(description="Create predictions")
 def create_predictions(modeladmin, request, queryset):
     from app_prediction.models import Prediction
+    from django.contrib.contenttypes.models import ContentType
 
-    predictions = []
     for _ in queryset:
-        predictions.append(Prediction(content_object=_, published=False))
-    if predictions:
-        Prediction.objects.bulk_create(predictions, batch_size=100)
+        Prediction.objects.get_or_create(
+            defaults={"published": False},
+            content_type=ContentType.objects.get_for_model(queryset.model),
+            object_id=_.id,
+        )
+
+
+@admin.action(description="Delete predictions")
+def delete_predictions(modeladmin, request, queryset):
+    from app_prediction.models import Prediction
+    from django.contrib.contenttypes.models import ContentType
+
+    Prediction.objects.filter(
+        content_type=ContentType.objects.get_for_model(queryset.model),
+        object_id__in=[_.id for _ in queryset],
+    ).delete()
